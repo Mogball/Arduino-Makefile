@@ -1679,46 +1679,46 @@ $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
 error_on_caterina:
 		$(ERROR_ON_CATERINA)
 
-# Use submake so we can guarantee the reset happens
-# before the upload, even with make -j
-upload:		$(TARGET_HEX) verify_size
-ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
-# do reset toggle at 1200 BAUD to enter bootloader if using avrdude or bossa
-ifeq ($(strip $(UPLOAD_TOOL)), avrdude)
-		$(MAKE) reset
-else ifeq ($(findstring bossac, $(strip $(UPLOAD_TOOL))), bossac)
-		$(MAKE) reset
-endif
-		$(MAKE) do_sam_upload
-else
-		$(MAKE) reset
-		$(MAKE) do_upload
-endif
-
-raw_upload:	$(TARGET_HEX) verify_size
-ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
-		$(MAKE) do_sam_upload
-else
-		$(MAKE) error_on_caterina
-		$(MAKE) do_upload
-endif
-
-do_upload:
-		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
-			$(AVRDUDE_UPLOAD_HEX)
-
-do_sam_upload:  $(TARGET_BIN) verify_size
-ifeq ($(findstring openocd, $(strip $(UPLOAD_TOOL))), openocd)
-		$(OPENOCD) $(OPENOCD_OPTS) -c "telnet_port disabled; program {{$(TARGET_BIN)}} verify reset $(BOOTLOADER_SIZE); shutdown"
-else ifeq ($(findstring bossac, $(strip $(UPLOAD_TOOL))), bossac)
-		$(BOSSA) $(BOSSA_OPTS) $(TARGET_BIN)
-else ifeq ($(findstring gdb, $(strip $(UPLOAD_TOOL))), gdb)
-		$(GDB) $(GDB_UPLOAD_OPTS)
-else ifeq ($(strip $(UPLOAD_TOOL)), avrdude)
-		$(MAKE) ispload
-else
-		@$(ECHO) "$(BOOTLOADER_UPLOAD_TOOL) not currently supported!\n\n"
-endif
+## Use submake so we can guarantee the reset happens
+## before the upload, even with make -j
+#upload:		$(TARGET_HEX) verify_size
+#ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
+## do reset toggle at 1200 BAUD to enter bootloader if using avrdude or bossa
+#ifeq ($(strip $(UPLOAD_TOOL)), avrdude)
+#		$(MAKE) reset
+#else ifeq ($(findstring bossac, $(strip $(UPLOAD_TOOL))), bossac)
+#		$(MAKE) reset
+#endif
+#		$(MAKE) do_sam_upload
+#else
+#		$(MAKE) reset
+#		$(MAKE) do_upload
+#endif
+#
+#raw_upload:	$(TARGET_HEX) verify_size
+#ifeq ($(findstring sam, $(strip $(ARCHITECTURE))), sam)
+#		$(MAKE) do_sam_upload
+#else
+#		$(MAKE) error_on_caterina
+#		$(MAKE) do_upload
+#endif
+#
+#do_upload:
+#		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+#			$(AVRDUDE_UPLOAD_HEX)
+#
+#do_sam_upload:  $(TARGET_BIN) verify_size
+#ifeq ($(findstring openocd, $(strip $(UPLOAD_TOOL))), openocd)
+#		$(OPENOCD) $(OPENOCD_OPTS) -c "telnet_port disabled; program {{$(TARGET_BIN)}} verify reset $(BOOTLOADER_SIZE); shutdown"
+#else ifeq ($(findstring bossac, $(strip $(UPLOAD_TOOL))), bossac)
+#		$(BOSSA) $(BOSSA_OPTS) $(TARGET_BIN)
+#else ifeq ($(findstring gdb, $(strip $(UPLOAD_TOOL))), gdb)
+#		$(GDB) $(GDB_UPLOAD_OPTS)
+#else ifeq ($(strip $(UPLOAD_TOOL)), avrdude)
+#		$(MAKE) ispload
+#else
+#		@$(ECHO) "$(BOOTLOADER_UPLOAD_TOOL) not currently supported!\n\n"
+#endif
 
 do_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
 		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
