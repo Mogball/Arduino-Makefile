@@ -63,7 +63,7 @@
 #
 # On Windows declare this environmental variables using the windows
 # configuration options or Cygwin .bashrc. Control Panel > System > Advanced system settings
-# The paths must use Unix style forward slash and not have any spaces 
+# The paths must use Unix style forward slash and not have any spaces
 # or escape charactors. One must use a symbolic link if the path does
 # contain spaces.
 #
@@ -492,7 +492,7 @@ endif
 ifndef AR_NAME
     AR_NAME := $(call PARSE_BOARD,$(BOARD_TAG),build.command.ar)
     ifndef AR_NAME
-        AR_NAME := $(TOOL_PREFIX)-ar
+        AR_NAME := $(TOOL_PREFIX)-gcc-ar
     else
         $(call show_config_variable,AR_NAME,[COMPUTED])
     endif
